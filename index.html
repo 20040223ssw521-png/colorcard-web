@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="灵感色卡">
+    <meta name="theme-color" content="#ffffff">
+    <title>灵感色卡 - 绘画配色助手</title>
+    
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 背景 -->
+        <div class="bg-gradient"></div>
+        
+        <!-- 主内容 -->
+        <div class="content">
+            <!-- 标题 -->
+            <header class="header">
+                <h1 class="title">灵感色卡</h1>
+                <p class="subtitle">为你的创作提供和谐配色</p>
+            </header>
+            
+            <!-- 色卡卡片 -->
+            <div class="palette-card">
+                <!-- 色卡名称 -->
+                <div class="palette-name-container">
+                    <span class="palette-name" id="paletteName">暖暮</span>
+                </div>
+                
+                <!-- 光影层次 -->
+                <div class="color-section">
+                    <h3 class="section-title">光影层次</h3>
+                    <div class="color-row">
+                        <div class="color-bubble" data-type="highlight" onclick="copyColor(this)">
+                            <div class="color-circle" id="highlightColor"></div>
+                            <span class="color-label">亮部</span>
+                            <span class="color-hex" id="highlightHex">#FFE4C4</span>
+                        </div>
+                        <div class="color-bubble" data-type="midtone" onclick="copyColor(this)">
+                            <div class="color-circle" id="midtoneColor"></div>
+                            <span class="color-label">中间调</span>
+                            <span class="color-hex" id="midtoneHex">#DEB887</span>
+                        </div>
+                        <div class="color-bubble" data-type="shadow" onclick="copyColor(this)">
+                            <div class="color-circle" id="shadowColor"></div>
+                            <span class="color-label">暗部</span>
+                            <span class="color-hex" id="shadowHex">#8B4513</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 人物肤色 -->
+                <div class="color-section">
+                    <h3 class="section-title">人物肤色</h3>
+                    <div class="color-row">
+                        <div class="color-bubble" data-type="skin" onclick="copyColor(this)">
+                            <div class="color-circle" id="skinColor"></div>
+                            <span class="color-label">基础肤色</span>
+                            <span class="color-hex" id="skinHex">#F4A460</span>
+                        </div>
+                        <div class="color-bubble" data-type="skinShadow" onclick="copyColor(this)">
+                            <div class="color-circle" id="skinShadowColor"></div>
+                            <span class="color-label">暗部肤色</span>
+                            <span class="color-hex" id="skinShadowHex">#A0522D</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 藏色调和 -->
+                <div class="color-section">
+                    <div class="section-header">
+                        <h3 class="section-title">藏色调和</h3>
+                        <span class="help-icon" onclick="showHelp()">?</span>
+                    </div>
+                    <div class="color-row">
+                        <div class="color-bubble hidden-color" data-type="hidden1" onclick="copyColor(this)">
+                            <div class="color-circle" id="hidden1Color">
+                                <span class="hidden-icon">👁</span>
+                            </div>
+                            <span class="color-label">藏色①</span>
+                            <span class="color-hex" id="hidden1Hex">#CD853F</span>
+                        </div>
+                        <div class="color-bubble hidden-color" data-type="hidden2" onclick="copyColor(this)">
+                            <div class="color-circle" id="hidden2Color">
+                                <span class="hidden-icon">👁</span>
+                            </div>
+                            <span class="color-label">藏色②</span>
+                            <span class="color-hex" id="hidden2Hex">#D2691E</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 点缀色 -->
+                <div class="color-section">
+                    <h3 class="section-title">点缀色</h3>
+                    <div class="color-row center">
+                        <div class="color-bubble accent-color" data-type="accent" onclick="copyColor(this)">
+                            <div class="color-circle" id="accentColor">
+                                <span class="accent-icon">✦</span>
+                            </div>
+                            <span class="color-label">点睛</span>
+                            <span class="color-hex" id="accentHex">#FF6347</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 重新生成按钮 -->
+            <button class="regenerate-btn" onclick="regeneratePalette()">
+                <span class="btn-icon">🔄</span>
+                <span class="btn-text">重新生成</span>
+            </button>
+        </div>
+        
+        <!-- 复制提示 -->
+        <div class="toast" id="toast">
+            <span class="toast-icon">✓</span>
+            <span class="toast-text" id="toastText">已复制 #FFE4C4</span>
+        </div>
+        
+        <!-- 帮助弹窗 -->
+        <div class="modal" id="helpModal" onclick="closeHelp()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <h3>什么是藏色？</h3>
+                <p>藏色是隐藏在画面中的调和色，用于丰富色彩层次。</p>
+                <p>使用建议：</p>
+                <ul>
+                    <li>混入亮部或暗部中使用</li>
+                    <li>增加画面色彩变化</li>
+                    <li>让画面更加耐看</li>
+                </ul>
+                <button class="modal-close" onclick="closeHelp()">知道了</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+    
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        }
+    </script>
+</body>
+</html>
